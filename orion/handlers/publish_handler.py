@@ -90,12 +90,18 @@ class PublishHandler(BaseHandler):
             device=device,
             latitude=lat,
             longitude=lon,
+            altitude=self.data.get('alt', 0),
             accuracy=self.data.get('acc'),
+            accuracy_alt=self.data.get('vac', 0),
             battery=self.data.get('batt'),
+            battery_status=self.data.get('bs', 0),
             trigger=self.data.get('t'),
             connection=self.data.get('conn'),
             tracker_id=self.data.get('tid'),
             address=address,
+            angle=self.data.get('cog', 0),
+            pressure=self.data.get('p', 0),
+            velocity=self.data.get('vel', 0)
         )
 
         with self.ctx.metrics_latency.profile('db.write_ms'):
