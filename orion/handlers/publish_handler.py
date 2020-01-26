@@ -65,6 +65,15 @@ class PublishHandler(BaseHandler):
     path = '/api/publish'
 
     def run(self, *args, **kwargs):
+        # Owntracks will send zero-length HTTP payloads after a friend has been
+        # deleted in app, in order to clear the data off the MQTT broker.
+        # No further way points will be transmitted until those payloads are
+        # accepted. Therefore, simply ignore those gracefully.
+        #
+        # Ref: https://github.com/owntracks/ios/issues/580#issuecomment-495276821
+        if '_type' not in  self.data:
+          return self.success(status=200)
+
         # Sometimes the client tries to send a reportLocation cmd. If server
         # responds with non-200, all further location updates get backed up behind it.
         # Handle with empty 200 response
