@@ -71,8 +71,13 @@ class PublishHandler(BaseHandler):
         # accepted. Therefore, simply ignore those gracefully.
         #
         # Ref: https://github.com/owntracks/ios/issues/580#issuecomment-495276821
-        if '_type' not in  self.data:
-          return self.success(status=200)
+        if '_type' not in self.data:
+            return self.success(status=200)
+    
+        # Dismiss packets from the ios client that are unhandled Owntracks features
+        # Possible types: https://owntracks.org/booklet/tech/json/
+        if self.data['_type'] in ['dump', 'waypoint', 'waypoints']:
+            return self.success(status=200)
 
         # Sometimes the client tries to send a reportLocation cmd. If server
         # responds with non-200, all further location updates get backed up behind it.
